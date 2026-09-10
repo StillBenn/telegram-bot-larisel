@@ -1,0 +1,25 @@
+# Секреты
+.env
+
+# База данных и её журналы
+data/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Выгрузки
+*.xlsx
+*.csv
+
+# Редакторы и ОС
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
