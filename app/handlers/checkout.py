@@ -15,7 +15,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from .. import db, texts
-from ..catalog import CHAIR_NORD, get_product
+from ..catalog import CHAIR_LARISEL, get_product
 from ..config import Settings
 from ..keyboards import (
     CartCB,
@@ -321,7 +321,7 @@ async def confirm_order(
         pass
 
     await callback.message.answer(
-        texts.order_created(order_id, total, CHAIR_NORD.lead_days),
+        texts.order_created(order_id, total, CHAIR_LARISEL.lead_days),
         reply_markup=main_menu(settings.is_admin(user.id)),
     )
     await callback.answer("Заказ оформлен ✅")

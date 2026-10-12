@@ -79,14 +79,14 @@ class FakeSession(BaseSession):
         self.calls.append(method)
         name = type(method).__name__
         if name == "GetMe":
-            return User(id=BOT_ID, is_bot=True, first_name="NORD", username="nord_demo_bot")
+            return User(id=BOT_ID, is_bot=True, first_name="Larisel", username="larisel_demo_bot")
         if name.startswith(("Send", "Edit")) and "ReplyMarkup" not in name:
             self._message_id += 1
             return Message(
                 message_id=self._message_id,
                 date=datetime.now(timezone.utc),
                 chat=Chat(id=CHAT_ID, type="private"),
-                from_user=User(id=BOT_ID, is_bot=True, first_name="NORD"),
+                from_user=User(id=BOT_ID, is_bot=True, first_name="Larisel"),
                 text=getattr(method, "text", None) or getattr(method, "caption", None) or "",
             )
         return True
@@ -177,7 +177,7 @@ def cb(data: str, with_photo: bool = False) -> Update:
         message_id=50,
         date=datetime.now(timezone.utc),
         chat=Chat(id=CHAT_ID, type="private"),
-        from_user=User(id=BOT_ID, is_bot=True, first_name="NORD"),
+        from_user=User(id=BOT_ID, is_bot=True, first_name="Larisel"),
         text=None if with_photo else "экран",
     )
     return Update(
@@ -203,7 +203,7 @@ async def main() -> None:
             admin_ids=(USER_ID,),
             viewer_url="https://example.com/3d",
             manager_url="https://t.me/example",
-            shop_name="Мебельная мастерская NORD",
+            shop_name="Мебельная мастерская Larisel",
             db_path=Path(tmp) / "flow.sqlite3",
             assets_dir=Path(tmp) / "assets",  # фото нет -> путь текстовой карточки
         )
@@ -232,31 +232,31 @@ async def main() -> None:
         print("\n[2] Конфигуратор")
         session.reset()
         await feed(msg("🪑 Собрать кресло"))
-        check("карточка товара", "Кресло NORD" in session.last_text())
+        check("карточка товара", "Кресло Larisel" in session.last_text())
         check("цена «от»", "42" in session.last_text(), session.last_text()[:80])
 
         session.reset()
-        await feed(cb("cfg:summary:chair-nord:-:-"))
+        await feed(cb("cfg:summary:chair-larisel:-:-"))
         check("экран сборки открылся", "Итого" in session.last_text(), session.last_text()[:80])
         check("базовая цена на экране", "42" in session.last_text())
 
         session.reset()
-        await feed(cb("cfg:group:chair-nord:fabric:-"))
+        await feed(cb("cfg:group:chair-larisel:fabric:-"))
         check("список тканей открылся", "Ткань" in session.last_text(), session.last_text()[:80])
 
         session.reset()
-        await feed(cb("cfg:set:chair-nord:fabric:indigo"))
+        await feed(cb("cfg:set:chair-larisel:fabric:indigo"))
         check("ткань применилась", "Индиго" in session.last_text(), session.last_text()[:120])
         check("цена пересчиталась (+3 200)", "46" in session.last_text(), session.last_text())
 
         session.reset()
-        await feed(cb("cfg:set:chair-nord:size:xl"))
+        await feed(cb("cfg:set:chair-larisel:size:xl"))
         check("размер XL применился", "XL" in session.last_text())
         check("цена 53 500", "53" in session.last_text(), session.last_text())
 
         print("\n[3] Корзина")
         session.reset()
-        await feed(cb("cfg:add:chair-nord:-:-"))
+        await feed(cb("cfg:add:chair-larisel:-:-"))
         cart_items = await db.get_cart(USER_ID)
         check("позиция в корзине", len(cart_items) == 1, len(cart_items))
         check("цена позиции 53 500", cart_items[0].unit_price == 53_500, cart_items[0].unit_price)

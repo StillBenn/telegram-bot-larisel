@@ -1,7 +1,7 @@
 """Дымовой тест: проходит весь путь заказа без Telegram.
 
 Запуск: python tests/smoke.py
-Работает на временной базе, боевую data/nord.sqlite3 не трогает.
+Работает на временной базе, боевую data/larisel.sqlite3 не трогает.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 os.environ.setdefault("BOT_TOKEN", "0:TEST")
 
 from app import db, export, texts  # noqa: E402
-from app.catalog import CHAIR_NORD  # noqa: E402
+from app.catalog import CHAIR_LARISEL  # noqa: E402
 from app.keyboards import (  # noqa: E402
     admin_list_kb,
     admin_order_kb,
@@ -52,12 +52,12 @@ def check(name: str, condition: bool, detail: str = "") -> None:
 
 async def main() -> None:
     print("\n[1] Цены и опции")
-    check("базовая цена 42 900", CHAIR_NORD.price(None) == 42_900, CHAIR_NORD.price(None))
+    check("базовая цена 42 900", CHAIR_LARISEL.price(None) == 42_900, CHAIR_LARISEL.price(None))
     full = {"fabric": "terracotta", "frame": "brass", "size": "xl", "pillow": "yes"}
-    check("максимальная сборка 65 300", CHAIR_NORD.price(full) == 65_300, CHAIR_NORD.price(full))
+    check("максимальная сборка 65 300", CHAIR_LARISEL.price(full) == 65_300, CHAIR_LARISEL.price(full))
     check(
         "неизвестная опция откатывается к базовой",
-        CHAIR_NORD.price({"frame": "ЧТО-ТО"}) == 42_900,
+        CHAIR_LARISEL.price({"frame": "ЧТО-ТО"}) == 42_900,
     )
 
     print("\n[2] Телефон")
@@ -78,11 +78,11 @@ async def main() -> None:
         user_id = 777
         await db.upsert_user(user_id, "tester", "Тест Тестов")
 
-        cfg_a = CHAIR_NORD.normalize({"fabric": "olive", "frame": "walnut"})
-        cfg_b = CHAIR_NORD.normalize({"fabric": "indigo", "size": "xl", "pillow": "yes"})
-        await db.add_to_cart(user_id, CHAIR_NORD.id, cfg_a, CHAIR_NORD.price(cfg_a))
-        await db.add_to_cart(user_id, CHAIR_NORD.id, cfg_a, CHAIR_NORD.price(cfg_a))
-        await db.add_to_cart(user_id, CHAIR_NORD.id, cfg_b, CHAIR_NORD.price(cfg_b))
+        cfg_a = CHAIR_LARISEL.normalize({"fabric": "olive", "frame": "walnut"})
+        cfg_b = CHAIR_LARISEL.normalize({"fabric": "indigo", "size": "xl", "pillow": "yes"})
+        await db.add_to_cart(user_id, CHAIR_LARISEL.id, cfg_a, CHAIR_LARISEL.price(cfg_a))
+        await db.add_to_cart(user_id, CHAIR_LARISEL.id, cfg_a, CHAIR_LARISEL.price(cfg_a))
+        await db.add_to_cart(user_id, CHAIR_LARISEL.id, cfg_b, CHAIR_LARISEL.price(cfg_b))
 
         items = await db.get_cart(user_id)
         check("одинаковая сборка слилась в одну позицию", len(items) == 2, len(items))
@@ -91,14 +91,14 @@ async def main() -> None:
         await db.change_qty(user_id, items[1].id, -1)
         check("qty 1 → 0 удаляет позицию", len(await db.get_cart(user_id)) == 1)
 
-        await db.add_to_cart(user_id, CHAIR_NORD.id, cfg_b, CHAIR_NORD.price(cfg_b))
+        await db.add_to_cart(user_id, CHAIR_LARISEL.id, cfg_b, CHAIR_LARISEL.price(cfg_b))
         items = await db.get_cart(user_id)
         total = sum(item.total for item in items)
         rows = [
             (
                 item.product_id,
-                CHAIR_NORD.name,
-                CHAIR_NORD.config_line(item.config),
+                CHAIR_LARISEL.name,
+                CHAIR_LARISEL.config_line(item.config),
                 item.config,
                 item.qty,
                 item.unit_price,
@@ -149,12 +149,12 @@ async def main() -> None:
         check("csv содержит имя клиента", "Иван Иванов".encode("utf-8") in csv_bytes)
 
         print("\n[5] Тексты и лимиты Telegram")
-        card = texts.product_card(CHAIR_NORD)
+        card = texts.product_card(CHAIR_LARISEL)
         check("карточка товара влезает в подпись", len(card) <= CAPTION_LIMIT, len(card))
-        cfg_text = texts.configuration(CHAIR_NORD, full)
+        cfg_text = texts.configuration(CHAIR_LARISEL, full)
         check("экран сборки влезает в подпись", len(cfg_text) <= CAPTION_LIMIT, len(cfg_text))
-        for group in CHAIR_NORD.groups:
-            picker = texts.group_picker(CHAIR_NORD, group.id, full)
+        for group in CHAIR_LARISEL.groups:
+            picker = texts.group_picker(CHAIR_LARISEL, group.id, full)
             check(
                 f"экран «{group.title}» влезает в подпись",
                 len(picker) <= CAPTION_LIMIT,
@@ -167,7 +167,7 @@ async def main() -> None:
             ("уведомление админу", texts.admin_new_order(order)),
             ("карточка заказа (админ)", texts.admin_order(order)),
             ("мои заказы", texts.orders_list([order])),
-            ("о мастерской", texts.about("Мебельная мастерская NORD")),
+            ("о мастерской", texts.about("Мебельная мастерская Larisel")),
         ):
             check(f"{name} не пустой и < 4096", 0 < len(text) < 4096, len(text))
 
@@ -179,12 +179,12 @@ async def main() -> None:
 
         print("\n[6] Клавиатуры и длина callback_data")
         items = [
-            db.CartItem(id=1, product_id=CHAIR_NORD.id, config=cfg_a, qty=2, unit_price=1),
+            db.CartItem(id=1, product_id=CHAIR_LARISEL.id, config=cfg_a, qty=2, unit_price=1),
         ]
         keyboards = {
             "главное меню": main_menu(True),
-            "карточка товара": product_kb(CHAIR_NORD, "https://example.com"),
-            "конфигуратор": config_kb(CHAIR_NORD, full, "https://example.com"),
+            "карточка товара": product_kb(CHAIR_LARISEL, "https://example.com"),
+            "конфигуратор": config_kb(CHAIR_LARISEL, full, "https://example.com"),
             "корзина": cart_kb(items),
             "подтверждение": confirm_kb(),
             "телефон": phone_kb(),
@@ -192,8 +192,8 @@ async def main() -> None:
             "список заказов": admin_list_kb([order], 0, 1, "-"),
             "карточка заказа": admin_order_kb(order, 0, "-"),
         }
-        for group in CHAIR_NORD.groups:
-            keyboards[f"опции «{group.title}»"] = group_kb(CHAIR_NORD, group.id, full)
+        for group in CHAIR_LARISEL.groups:
+            keyboards[f"опции «{group.title}»"] = group_kb(CHAIR_LARISEL, group.id, full)
 
         for name, keyboard in keyboards.items():
             rows_kb = getattr(keyboard, "inline_keyboard", None) or keyboard.keyboard
@@ -210,7 +210,7 @@ async def main() -> None:
             )
 
     print("\n[7] Фото товара")
-    photo = Path(__file__).resolve().parent.parent / "assets" / CHAIR_NORD.photo
+    photo = Path(__file__).resolve().parent.parent / "assets" / CHAIR_LARISEL.photo
     check("файл фото на месте", photo.is_file(), photo)
     if photo.is_file():
         head = photo.read_bytes()[:3]

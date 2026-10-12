@@ -135,9 +135,9 @@ class Product:
         return ", ".join(option.name for _, option in self.selected(config))
 
 
-CHAIR_NORD = Product(
-    id="chair-nord",
-    name="Кресло NORD",
+CHAIR_LARISEL = Product(
+    id="chair-larisel",
+    name="Кресло Larisel",
     subtitle="Каркас из массива, съёмные чехлы, ручная сборка",
     description=(
         "Кресло собирается под заказ: 6 тканей, 4 варианта каркаса, два размера "
@@ -147,10 +147,10 @@ CHAIR_NORD = Product(
     base_price=42_900,
     lead_days=14,
     groups=(FABRIC, FRAME, SIZE, PILLOW),
-    photo="chair-nord.jpg",
+    photo="chair-larisel.jpg",
 )
 
-PRODUCTS: tuple[Product, ...] = (CHAIR_NORD,)
+PRODUCTS: tuple[Product, ...] = (CHAIR_LARISEL,)
 
 
 def get_product(product_id: str) -> Product | None:

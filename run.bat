@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title NORD bot
+title Larisel bot
 cd /d "%~dp0"
 
 if not exist ".env" (

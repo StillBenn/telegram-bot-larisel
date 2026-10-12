@@ -70,7 +70,7 @@ def load_settings() -> Settings:
             "VIEWER_URL", "https://stillbenn.github.io/threejs-chair-configurator/"
         ).strip(),
         manager_url=os.getenv("MANAGER_URL", "https://t.me/Still_Benn").strip(),
-        shop_name=os.getenv("SHOP_NAME", "Мебельная мастерская NORD").strip(),
-        db_path=data_dir / os.getenv("DB_NAME", "nord.sqlite3").strip(),
+        shop_name=os.getenv("SHOP_NAME", "Мебельная мастерская Larisel").strip(),
+        db_path=data_dir / os.getenv("DB_NAME", "larisel.sqlite3").strip(),
         assets_dir=BASE_DIR / "assets",
     )

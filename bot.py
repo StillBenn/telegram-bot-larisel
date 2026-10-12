@@ -22,7 +22,7 @@ from app.config import ConfigError, Settings, load_settings
 from app.handlers import setup_routers
 from app.middlewares import ThrottlingMiddleware, UserMiddleware
 
-log = logging.getLogger("nord")
+log = logging.getLogger("larisel")
 
 USER_COMMANDS = [
     BotCommand(command="start", description="Главное меню"),

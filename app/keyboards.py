@@ -155,7 +155,7 @@ def cart_kb(items: list[CartItem]) -> InlineKeyboardMarkup:
     footer.button(text="✅ Оформить заказ", callback_data=CartCB(action="checkout"))
     footer.button(
         text="➕ Собрать ещё одно",
-        callback_data=CfgCB(action="summary", product="chair-nord"),
+        callback_data=CfgCB(action="summary", product="chair-larisel"),
     )
     footer.button(text="🧹 Очистить корзину", callback_data=CartCB(action="clear"))
     footer.adjust(1)
@@ -167,7 +167,7 @@ def empty_cart_kb() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
         text="🪑 Собрать кресло",
-        callback_data=CfgCB(action="summary", product="chair-nord"),
+        callback_data=CfgCB(action="summary", product="chair-larisel"),
     )
     return builder.as_markup()
 

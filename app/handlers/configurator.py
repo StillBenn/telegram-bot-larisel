@@ -13,7 +13,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from .. import db, texts
-from ..catalog import CHAIR_NORD, Product, get_product
+from ..catalog import CHAIR_LARISEL, Product, get_product
 from ..config import Settings
 from ..keyboards import CfgCB, config_kb, group_kb, product_kb
 from ..ui import edit_view, send_card
@@ -47,7 +47,7 @@ async def write_config(
 @router.message(F.text == texts.BTN_CONFIGURE)
 @router.message(Command("configure"))
 async def open_product(message: Message, settings: Settings) -> None:
-    product = CHAIR_NORD
+    product = CHAIR_LARISEL
     photo = settings.assets_dir / product.photo if product.photo else None
     await send_card(
         message,

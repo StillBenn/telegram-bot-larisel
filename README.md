@@ -1,4 +1,4 @@
-# Telegram-бот мебельной мастерской NORD
+# Telegram-бот мебельной мастерской Larisel
 
 Бот под ключ для производителя мебели: клиент собирает кресло прямо в чате,
 видит цену в реальном времени, смотрит выбранную модель в 3D и оформляет заказ.
@@ -52,8 +52,8 @@
 ## Запуск
 
 ```bash
-git clone https://github.com/StillBenn/telegram-bot-nord.git
-cd telegram-bot-nord
+git clone https://github.com/StillBenn/telegram-bot-larisel.git
+cd telegram-bot-larisel
 pip install -r requirements.txt
 ```
 

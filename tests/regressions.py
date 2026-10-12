@@ -26,7 +26,7 @@ from openpyxl import load_workbook  # noqa: E402
 from flow import BOT_ID, CHAT_ID, USER_ID, FakeSession, cb, contact_msg, msg  # noqa: E402
 
 from app import db, export, texts  # noqa: E402
-from app.catalog import CHAIR_NORD  # noqa: E402
+from app.catalog import CHAIR_LARISEL  # noqa: E402
 from app.config import Settings  # noqa: E402
 from app.keyboards import cancel_kb, skip_kb  # noqa: E402
 from app.utils import SHOP_TZ, now  # noqa: E402
@@ -58,7 +58,7 @@ def build(tmp: Path):
         admin_ids=(USER_ID,),
         viewer_url="https://example.com/3d",
         manager_url="https://t.me/example",
-        shop_name="Мебельная мастерская NORD",
+        shop_name="Мебельная мастерская Larisel",
         db_path=tmp / "reg.sqlite3",
         assets_dir=tmp / "assets",
     )
@@ -112,8 +112,8 @@ async def main() -> None:
 
         await feed(msg("/start"))
         await feed(msg(texts.BTN_CONFIGURE))
-        await feed(cb("cfg:summary:chair-nord:-:-"))
-        await feed(cb("cfg:add:chair-nord:-:-"))
+        await feed(cb("cfg:summary:chair-larisel:-:-"))
+        await feed(cb("cfg:add:chair-larisel:-:-"))
         check("в корзине 1 позиция", len(await db.get_cart(USER_ID)) == 1)
 
         await reach_confirm()
@@ -125,7 +125,7 @@ async def main() -> None:
         # прямо в состоянии подтверждения и меняла сумму уже согласованного заказа.
         cart_id = (await db.get_cart(USER_ID))[0].id
         session.reset()
-        await feed(cb("cfg:add:chair-nord:-:-"))
+        await feed(cb("cfg:add:chair-larisel:-:-"))
         total_qty = sum(item.qty for item in await db.get_cart(USER_ID))
         check("кнопка конфигуратора заблокирована в оформлении", total_qty == 1, total_qty)
 
@@ -149,12 +149,12 @@ async def main() -> None:
         await reset(dp, session, tmp, "s2")
 
         await feed(msg("/start"))
-        await feed(cb("cfg:add:chair-nord:-:-"))
+        await feed(cb("cfg:add:chair-larisel:-:-"))
         await reach_confirm()
 
         # Имитируем второе устройство: пишем в базу мимо хендлеров.
-        other = CHAIR_NORD.normalize({"fabric": "indigo"})
-        await db.add_to_cart(USER_ID, CHAIR_NORD.id, other, CHAIR_NORD.price(other))
+        other = CHAIR_LARISEL.normalize({"fabric": "indigo"})
+        await db.add_to_cart(USER_ID, CHAIR_LARISEL.id, other, CHAIR_LARISEL.price(other))
 
         session.reset()
         await feed(cb("chk:confirm"))
@@ -175,7 +175,7 @@ async def main() -> None:
         check("после нового согласия заказ создан", len(orders) == 1, len(orders))
         check(
             "и уже на новую сумму",
-            bool(orders) and orders[0].total == 42_900 + CHAIR_NORD.price(other),
+            bool(orders) and orders[0].total == 42_900 + CHAIR_LARISEL.price(other),
             orders[0].total if orders else None,
         )
 
@@ -184,7 +184,7 @@ async def main() -> None:
         await reset(dp, session, tmp, "s3")
 
         await feed(msg("/start"))
-        await feed(cb("cfg:add:chair-nord:-:-"))
+        await feed(cb("cfg:add:chair-larisel:-:-"))
         await feed(cb("cart:checkout:0"))
 
         session.reset()
@@ -209,11 +209,11 @@ async def main() -> None:
         await reset(dp, session, tmp, "s4")
 
         added = 0
-        for fabric in (option.id for option in CHAIR_NORD.group("fabric").options):
-            for frame in (option.id for option in CHAIR_NORD.group("frame").options):
-                config = CHAIR_NORD.normalize({"fabric": fabric, "frame": frame})
+        for fabric in (option.id for option in CHAIR_LARISEL.group("fabric").options):
+            for frame in (option.id for option in CHAIR_LARISEL.group("frame").options):
+                config = CHAIR_LARISEL.normalize({"fabric": fabric, "frame": frame})
                 if await db.add_to_cart(
-                    USER_ID, CHAIR_NORD.id, config, CHAIR_NORD.price(config)
+                    USER_ID, CHAIR_LARISEL.id, config, CHAIR_LARISEL.price(config)
                 ):
                     added += 1
 
@@ -227,8 +227,8 @@ async def main() -> None:
 
         cart_text = texts.cart(
             items,
-            {CHAIR_NORD.id: CHAIR_NORD.name},
-            {item.id: CHAIR_NORD.config_line(item.config) for item in items},
+            {CHAIR_LARISEL.id: CHAIR_LARISEL.name},
+            {item.id: CHAIR_LARISEL.config_line(item.config) for item in items},
         )
         check(
             f"полная корзина влезает в сообщение ({len(cart_text)} знаков)",
@@ -240,19 +240,19 @@ async def main() -> None:
         print("\n[5] «Мои заказы» не ломаются на длинной истории")
         await reset(dp, session, tmp, "s5")
 
-        config = CHAIR_NORD.default_config()
+        config = CHAIR_LARISEL.default_config()
         rows = [
             (
-                CHAIR_NORD.id,
-                CHAIR_NORD.name,
-                CHAIR_NORD.config_line(config),
+                CHAIR_LARISEL.id,
+                CHAIR_LARISEL.name,
+                CHAIR_LARISEL.config_line(config),
                 config,
                 1,
                 42_900,
             )
         ] * 6
         for _ in range(10):
-            await db.add_to_cart(USER_ID, CHAIR_NORD.id, config, 42_900)
+            await db.add_to_cart(USER_ID, CHAIR_LARISEL.id, config, 42_900)
             await db.create_order(USER_ID, "tester", ORDER_FORM, rows, 6 * 42_900)
 
         history = texts.orders_list(await db.user_orders(USER_ID, limit=10))
@@ -268,7 +268,7 @@ async def main() -> None:
         await reset(dp, session, tmp, "s6")
 
         evil = '=HYPERLINK("http://evil.tld";"Клиент")'
-        await db.add_to_cart(USER_ID, CHAIR_NORD.id, config, 42_900)
+        await db.add_to_cart(USER_ID, CHAIR_LARISEL.id, config, 42_900)
         await db.create_order(
             USER_ID,
             "tester",
@@ -281,9 +281,9 @@ async def main() -> None:
             },
             [
                 (
-                    CHAIR_NORD.id,
-                    CHAIR_NORD.name,
-                    CHAIR_NORD.config_line(config),
+                    CHAIR_LARISEL.id,
+                    CHAIR_LARISEL.name,
+                    CHAIR_LARISEL.config_line(config),
                     config,
                     1,
                     42_900,

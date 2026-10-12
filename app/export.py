@@ -66,7 +66,7 @@ def _pretty(key: str, value: object) -> object:
 
 
 def timestamped_name(extension: str) -> str:
-    return f"nord-orders-{datetime.now():%Y%m%d-%H%M}.{extension}"
+    return f"larisel-orders-{datetime.now():%Y%m%d-%H%M}.{extension}"
 
 
 def to_xlsx(rows: list[dict[str, object]]) -> bytes:
