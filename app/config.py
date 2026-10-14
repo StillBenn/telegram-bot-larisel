@@ -67,7 +67,7 @@ def load_settings() -> Settings:
         token=token,
         admin_ids=_parse_admin_ids(os.getenv("ADMIN_IDS", "")),
         viewer_url=os.getenv(
-            "VIEWER_URL", "https://stillbenn.github.io/threejs-chair-configurator/"
+            "VIEWER_URL", "https://larisel.com/mobilya/"
         ).strip(),
         manager_url=os.getenv("MANAGER_URL", "https://t.me/Still_Benn").strip(),
         shop_name=os.getenv("SHOP_NAME", "Мебельная мастерская Larisel").strip(),
